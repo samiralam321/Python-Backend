@@ -423,6 +423,25 @@ That's backend development in action.
 # REST API as a common way of designing web APIs around resources.
 
 
+# when you build FASTAPI application later : 
+
+
+Frontend
+   ↓
+HTTP
+   ↓
+FastAPI
+   ↓
+Python
+   ↓
+Database
+   ↓
+FastAPI
+   ↓
+HTTP
+   ↓
+Frontend
+
 
 
 

@@ -182,13 +182,15 @@ users = [
 ]
 
 adults = list(
-    filer(
+    filter(
         lambda user : user["age"] >= 18,
         users
     )
 )
 
 print(adults)
+
+############## Note that : Map and Filter uses lambda Function ###############
 
 
 

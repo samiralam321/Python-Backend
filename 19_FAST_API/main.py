@@ -759,6 +759,222 @@ Frontend
 
 
 
+################# PUT, PATCH AND DELETE ######################
+
+
+# PUT is used to update an existing resources : 
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class User(BaseModel):
+    name: str
+    age:int
+    email: str
+
+@app.put("/users/{user_id}")
+def update_user(user_id:int, user: User):
+    return {
+        "message" : "User Updates",
+        "user_id" : user_id,
+        "updated_user" : user
+    }
+
+# what does FastAPI does : 
+
+
+Step 1
+↓
+Extract user_id from URL
+
+user_id = 101
+
+
+Step 2
+↓
+Read JSON Request Body
+
+
+Step 3
+↓
+Validate using User model
+
+
+Step 4
+↓
+Create:
+
+user.name
+user.age
+user.email
+
+
+Step 5
+↓
+Run update_user()
+
+
+
+####### Note that : PUT -> Replace/update the complete resourc
+# PUT -> Update the compleye object 
+
+
+
+#################### What is PATCH #######################
+
+# Patch -> Partial Update  (update only specific fields)
+# Suppose i just want to update : age
+
+# so you only send : 
+
+{
+    "age" : 22
+}
+
+# you do not send email and name 
+
+
+# the problem with our current user model
+
+our current model is : 
+
+class User(BaseModel):
+    name: str
+    age: int
+    email: str
+
+so this : 
+
+{
+    "age": 22
+}
+
+will fail 
+
+coz fastAPI excepts 
+
+name ❌ missing
+age  ✅
+email ❌ missing
+
+
+
+############## Creating an Update Model ############
+
+class UserUpdate(BaseModel):
+    name: str | None = None
+    age: int | None = None
+    email: str | None = None
+
+# now every field is optional
+
+
+############## Creating a PATCH Endpoint
+
+@app.patch("/users/{user_id}")
+def update_user_partially (
+    user_id: int,
+    user: UserUpdate
+):
+
+    return {
+        "message" : "User updated partially",
+        "user_id" : user_id,
+        "updated_data" : user
+    }
+
+
+
+############## DELETE ###################
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id:int):
+    return {
+        "message" : "User deleted sucessfully",
+        "user_id" : user_id
+    }
+
+
+############### Full CRUD API ###################
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class User(BaseModel):
+    name: str
+    age: int
+    email: str
+
+
+class UserUpdate(BaseModel):
+    name: str | None = None
+    age:int | None = None
+    email: str | None = None
+
+#Read
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    return {
+        "message" : "User found",
+        "user_id" : user_id
+    }
+
+
+#CREATE
+
+@app.post("/users")
+def create_user(user: User):
+    return {
+        "message" : "User Created",
+        "user" : user
+    }
+
+
+# Complete Update
+
+@app.put("/users/{user_id}")
+def update_user(user_id:int, user: User):
+    return {
+        "message" : "User completely updated",
+        "used_id" : user_id,
+        "user" : user
+    }
+
+# Partial Update
+
+
+@app.patch("/users/{user_id}")
+def update_user_partially(
+    user_id: int,
+    user: UserUpdate
+):
+
+   retrun {
+      "message" : "User partially updated",
+      "user_id" : user_id,
+      "updated_data": user
+   }
+
+
+
+#Delete
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int):
+    return {
+        "message" : "User deleted",
+        "user_id" : user_id
+    }
+
+
+
+
+
 
 
 
